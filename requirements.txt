@@ -1,0 +1,5 @@
+meilisearch
+pandas
+flask
+jinja2
+python-slugify

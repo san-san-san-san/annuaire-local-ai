@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}🗺️ Plan du Site - Annuaire Professionnel{% endblock %}
+
+{% block page_title %}🗺️ Plan du Site{% endblock %}
+{% block page_description %}📍 Découvrez toutes nos catégories organisées par département et ville{% endblock %}
+
+{% block content %}
+<!-- Department Overview -->
+<div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-map-marked-alt text-blue-600 mr-3"></i>
+        📍 Départements couverts
+    </h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for dept_code, dept_name in departments.items() %}
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 hover:bg-blue-100 transition duration-200">
+            <h3 class="font-semibold text-blue-800 mb-2">🏛️ {{ dept_name }} ({{ dept_code }})</h3>
+            <div class="text-sm text-blue-600">
+                <div>🏘️ {{ stats.cities_count }} villes</div>
+                <div>🏠 {{ stats.total_addresses }} adresses</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Categories by Department -->
+<div class="space-y-8">
+    {% for dept_code, dept_name in departments.items() %}
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <i class="fas fa-building text-purple-600 mr-3"></i>
+            🏛️ {{ dept_name }} ({{ dept_code }})
+        </h2>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for category_slug, category_name in categories.items() %}
+            <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:bg-blue-50 transition duration-200">
+                <div class="flex items-center mb-3">
+                    {% if category_slug == 'couvreur' %}
+                    <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-home text-orange-600"></i>
+                    </div>
+                    {% elif category_slug == 'pisciniste' %}
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-swimmer text-blue-600"></i>
+                    </div>
+                    {% elif category_slug == 'plombier' %}
+                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-wrench text-green-600"></i>
+                    </div>
+                    {% elif category_slug == 'vitrier' %}
+                    <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-window-maximize text-purple-600"></i>
+                    </div>
+                    {% endif %}
+                    <h3 class="font-semibold text-gray-800">👷 {{ category_name }}</h3>
+                </div>
+
+                <a href="/category/{{ category_slug }}"
+                   class="inline-flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 text-sm">
+                    🏙️ Voir les villes
+                </a>
+
+                <!-- Sample cities for this category -->
+                {% if sitemap_data[category_slug] %}
+                <div class="mt-3 pt-3 border-t border-gray-200">
+                    <p class="text-xs text-gray-500 mb-2">🏘️ Villes principales :</p>
+                    <div class="space-y-1">
+                        {% for city in sitemap_data[category_slug][:5] %}
+                        <a href="/category/{{ category_slug }}/{{ city.slug }}"
+                           class="block text-xs text-gray-600 hover:text-blue-600 hover:underline">
+                            📍 {{ city.name }} ({{ city.count }} adresse{{ 's' if city.count > 1 else '' }})
+                        </a>
+                        {% endfor %}
+                        {% if sitemap_data[category_slug]|length > 5 %}
+                        <div class="text-xs text-gray-400">
+                            ... et {{ sitemap_data[category_slug]|length - 5 }} autres villes
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Complete Stats -->
+<div class="bg-gradient-to-r from-blue-600 to-purple-700 text-white rounded-lg p-8 mt-8">
+    <div class="text-center">
+        <h2 class="text-2xl font-bold mb-6">📊 Statistiques complètes</h2>
+        <div class="grid md:grid-cols-4 gap-6">
+            <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                <div class="text-3xl font-bold mb-2">{{ stats.total_addresses }}</div>
+                <div class="text-sm opacity-90">🏠 Adresses totales</div>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                <div class="text-3xl font-bold mb-2">{{ stats.cities_count }}</div>
+                <div class="text-sm opacity-90">🏘️ Villes couvertes</div>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                <div class="text-3xl font-bold mb-2">{{ categories|length }}</div>
+                <div class="text-sm opacity-90">👷 Métiers</div>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-lg p-4">
+                <div class="text-3xl font-bold mb-2">{{ departments|length }}</div>
+                <div class="text-sm opacity-90">🏛️ Départements</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

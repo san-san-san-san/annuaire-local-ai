@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Plan du site - Toutes les URLs{% endblock %}
+
+{% block page_title %}Plan du site complet{% endblock %}
+{% block page_description %}Toutes les pages de l'annuaire pour faciliter la navigation{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Pages principales</h2>
+    <ul class="space-y-2">
+        <li><a href="/" class="text-blue-600 hover:underline">Accueil</a></li>
+        <li><a href="/search" class="text-blue-600 hover:underline">Recherche</a></li>
+        <li><a href="/sitemap" class="text-blue-600 hover:underline">Plan du site</a></li>
+        <li><a href="/sitemap.xml" class="text-blue-600 hover:underline">Sitemap XML</a></li>
+    </ul>
+</div>
+
+{% for category_slug, category_data in sitemap_data.items() %}
+<div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">
+        <a href="/category/{{ category_slug }}" class="text-blue-600 hover:underline">{{ category_data.name }}</a>
+    </h2>
+
+    {% for dept_code, dept_data in category_data.departments.items() %}
+    <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-700 mb-2">
+            <a href="/category/{{ category_slug }}/department/{{ dept_code }}" class="text-blue-600 hover:underline">
+                {{ dept_data.name }} ({{ dept_code }})
+            </a>
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 text-sm">
+            {% for commune in dept_data.communes %}
+            <a href="/address/{{ category_slug }}/{{ commune.slug }}" class="text-gray-600 hover:text-blue-600 hover:underline">
+                {{ commune.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+{% endblock %}

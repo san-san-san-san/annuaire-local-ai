@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg p-8 mb-12 text-white">
+    <div class="text-center">
+        <h1 class="text-4xl font-bold mb-4">🏠 Annuaire Professionnel du Sud-Est</h1>
+        <p class="text-xl mb-6">Trouvez les meilleurs professionnels près de chez vous</p>
+        <p class="text-lg opacity-90">Couvreurs, Piscinistes, Plombiers, Vitriers - Plus de {{ stats.total_cities }} communes référencées</p>
+    </div>
+</div>
+
+<!-- Search Section -->
+<div class="bg-white rounded-lg shadow-lg p-8 mb-12">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">🔍 Recherche rapide</h2>
+    <form action="/search" method="GET" class="max-w-4xl mx-auto">
+        <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex-1">
+                <input type="text" name="q" placeholder="Rechercher une commune, un département..."
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <div class="w-full md:w-48">
+                <select name="category" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <option value="">Toutes catégories</option>
+                    {% for slug, name in categories.items() %}
+                    <option value="{{ slug }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+                <i class="fas fa-search mr-2"></i>Rechercher
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Categories Grid -->
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+    {% for slug, name in categories.items() %}
+    <div class="card-hover bg-white rounded-lg shadow-lg p-6 text-center">
+        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+            {% if slug == 'couvreur' %}
+            <i class="fas fa-home text-white text-2xl"></i>
+            {% elif slug == 'pisciniste' %}
+            <i class="fas fa-swimmer text-white text-2xl"></i>
+            {% elif slug == 'plombier' %}
+            <i class="fas fa-wrench text-white text-2xl"></i>
+            {% elif slug == 'vitrier' %}
+            <i class="fas fa-window-maximize text-white text-2xl"></i>
+            {% elif slug == 'architecte-interieur' %}
+            <i class="fas fa-couch text-white text-2xl"></i>
+            {% endif %}
+        </div>
+        <h3 class="text-xl font-semibold mb-2">👷 {{ name }}</h3>
+        <p class="text-gray-600 mb-4">✨ Trouvez un {{ name.lower() }} près de chez vous</p>
+        <a href="/category/{{ slug }}" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+            🏠 Voir les départements
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Why Choose Us Section -->
+<div class="bg-white rounded-lg shadow-lg p-8 mb-12">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">🌟 Pourquoi nous choisir ?</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+        <div class="text-center">
+            <div class="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-map-marker-alt text-green-600 text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">🎯 Couverture Régionale</h3>
+            <p class="text-gray-600">Spécialisés dans le Sud-Est de la France avec une connaissance approfondie des communes locales</p>
+        </div>
+        <div class="text-center">
+            <div class="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-users text-blue-600 text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">👥 Professionnels Qualifiés</h3>
+            <p class="text-gray-600">Tous nos partenaires sont des artisans certifiés avec une expertise reconnue</p>
+        </div>
+        <div class="text-center">
+            <div class="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-clock text-purple-600 text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">⚡ Service Rapide</h3>
+            <p class="text-gray-600">Recherche instantanée et mise en relation rapide avec les professionnels de votre région</p>
+        </div>
+    </div>
+</div>
+
+<!-- Regional Coverage -->
+<div class="bg-white rounded-lg shadow-lg p-8 mb-12">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">🗺️ Notre Zone de Couverture</h2>
+    <div class="grid md:grid-cols-2 gap-8">
+        <div>
+            <h3 class="text-lg font-semibold mb-4 text-blue-600">📍 Régions Couvertes</h3>
+            <ul class="space-y-2 text-gray-600">
+                <li>🏔️ <strong>Auvergne-Rhône-Alpes</strong> - Savoie, Haute-Savoie, Isère, Drôme, Ardèche</li>
+                <li>🌴 <strong>Provence-Alpes-Côte d'Azur</strong> - Alpes-Maritimes, Var, Bouches-du-Rhône</li>
+                <li>🌊 <strong>Occitanie Est</strong> - Gard, Hérault, Aude, Pyrénées-Orientales</li>
+                <li>🏔️ <strong>Hautes-Alpes</strong> - Gap, Briançon et environs</li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="text-lg font-semibold mb-4 text-blue-600">🏘️ Types de Communes</h3>
+            <ul class="space-y-2 text-gray-600">
+                <li>🏙️ <strong>Centres urbains</strong> - Lyon, Marseille, Nice, Montpellier</li>
+                <li>🏘️ <strong>Villes moyennes</strong> - Annecy, Chambéry, Valence, Avignon</li>
+                <li>🏞️ <strong>Communes rurales</strong> - Villages de montagne et de campagne</li>
+                <li>🏖️ <strong>Littoral méditerranéen</strong> - Stations balnéaires et ports</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="bg-white rounded-lg shadow-lg p-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">📊 Nos Chiffres</h2>
+    <div class="grid md:grid-cols-4 gap-8 text-center">
+        <div>
+            <div class="text-3xl font-bold text-blue-600 mb-2">{{ stats.total_addresses }}</div>
+            <div class="text-gray-600">Communes référencées</div>
+        </div>
+        <div>
+            <div class="text-3xl font-bold text-green-600 mb-2">{{ stats.total_cities }}</div>
+            <div class="text-gray-600">Villes couvertes</div>
+        </div>
+        <div>
+            <div class="text-3xl font-bold text-purple-600 mb-2">23</div>
+            <div class="text-gray-600">Départements</div>
+        </div>
+        <div>
+            <div class="text-3xl font-bold text-orange-600 mb-2">5</div>
+            <div class="text-gray-600">Catégories métiers</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

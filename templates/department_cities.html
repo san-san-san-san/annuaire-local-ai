@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category_name }} dans {{ department_name }} - Annuaire Professionnel{% endblock %}
+
+{% block page_title %}👷 {{ category_name }} dans {{ department_name }}{% endblock %}
+{% block page_description %}Trouvez un {{ category_name.lower() }} dans le département {{ department_name }}{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="flex mb-8" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+            <a href="/" class="text-gray-700 hover:text-blue-600">Accueil</a>
+        </li>
+        <li>
+            <div class="flex items-center">
+                <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                <a href="/category/{{ category_slug }}" class="text-gray-700 hover:text-blue-600">{{ category_name }}</a>
+            </div>
+        </li>
+        <li>
+            <div class="flex items-center">
+                <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                <span class="text-gray-500">{{ department_name }}</span>
+            </div>
+        </li>
+    </ol>
+</nav>
+
+<!-- Info Section -->
+<div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">{{ category_name }} dans {{ department_name }}</h2>
+            <p class="text-gray-600">{{ cities|length }} communes disponibles</p>
+        </div>
+        <div class="text-right">
+            <p class="text-sm text-gray-500">📍 Département {{ department_code }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Category Description -->
+<div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+    {% if category_slug == 'couvreur' %}
+    <div class="flex items-start space-x-4">
+        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-home text-blue-600 text-2xl"></i>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">🏠 Couvreurs dans {{ department_name }}</h3>
+            <p class="text-gray-600 mb-4">
+                Trouvez les meilleurs couvreurs dans le département {{ department_name }}. Nos professionnels interviennent pour tous vos travaux de toiture :
+                réparation, rénovation, isolation, pose de gouttières, traitement de charpente et installation de lucarnes.
+            </p>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">🔧 Services proposés :</h4>
+                    <ul class="text-gray-600 space-y-1">
+                        <li>• Réfection complète de toiture</li>
+                        <li>• Réparation d'urgence</li>
+                        <li>• Isolation thermique</li>
+                        <li>• Pose de gouttières</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">🏘️ Zone d'intervention :</h4>
+                    <ul class="text-gray-600 space-y-1">
+                        <li>• Toutes communes du {{ department_code }}</li>
+                        <li>• Interventions rapides</li>
+                        <li>• Devis gratuits</li>
+                        <li>• Garantie décennale</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% elif category_slug == 'pisciniste' %}
+    <div class="flex items-start space-x-4">
+        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-swimmer text-blue-600 text-2xl"></i>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">🏊 Piscinistes dans {{ department_name }}</h3>
+            <p class="text-gray-600 mb-4">
+                Découvrez nos piscinistes experts dans le département {{ department_name }}. Spécialistes de la construction,
+                rénovation et entretien de piscines : piscines enterrées, hors-sol, spas, traitement de l'eau et équipements.
+            </p>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">🏊 Services proposés :</h4>
+                    <ul class="text-gray-600 space-y-1">
+                        <li>• Construction de piscines</li>
+                        <li>• Rénovation et réparation</li>
+                        <li>• Entretien saisonnier</li>
+                        <li>• Installation d'équipements</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">💧 Spécialités :</h4>
+                    <ul class="text-gray-600 space-y-1">
+                        <li>• Piscines enterrées</li>
+                        <li>• Piscines hors-sol</li>
+                        <li>• Spas et jacuzzis</li>
+                        <li>• Traitement de l'eau</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% elif category_slug == 'plombier' %}
+    <div class="flex items-start space-x-4">
+        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-wrench text-blue-600 text-2xl"></i>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">🔧 Plombiers dans {{ department_name }}</h3>
+            <p class="text-gray-600 mb-4">
+                Trouvez votre plombier dans le département {{ department_name }}. Interventions d'urgence 24h/24,
+                installation sanitaire, chauffage, réparation de fuites, débouchage et rénovation de salle de bain.
+            </p>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">🚰 Services proposés :</h4>
+                    <ul class="text-gray-600 space-y-1">
+                        <li>• Urgences 24h/24</li>
+                        <li>• Installation sanitaire</li>
+                        <li>• Réparation de fuites</li>
+                        <li>• Débouchage canalisations</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">🏠 Domaines d'expertise :</h4>
+                    <ul class="text-gray-600 space-y-1">
+                        <li>• Chauffage et climatisation</li>
+                        <li>• Salle de bain complète</li>
+                        <li>• Cuisine et éviers</li>
+                        <li>• Dépannage urgent</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% elif category_slug == 'vitrier' %}
+    <div class="flex items-start space-x-4">
+        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-window-maximize text-blue-600 text-2xl"></i>
+        </div>
+        <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">🪟 Vitriers dans {{ department_name }}</h3>
+            <p class="text-gray-600 mb-4">
+                Découvrez nos vitriers professionnels dans le département {{ department_name }}. Spécialistes du verre :
+                remplacement de vitres, double vitrage, miroirs, vérandas, vitrines commerciales et dépannage d'urgence.
+            </p>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">🪟 Services proposés :</h4>
+                    <ul class="text-gray-600 space-y-1">
+                        <li>• Remplacement de vitres</li>
+                        <li>• Installation double vitrage</li>
+                        <li>• Dépannage d'urgence</li>
+                        <li>• Pose de miroirs</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">🏢 Spécialités :</h4>
+                    <ul class="text-gray-600 space-y-1">
+                        <li>• Vérandas et verrières</li>
+                        <li>• Vitrines commerciales</li>
+                        <li>• Portes et fenêtres</li>
+                        <li>• Verre sécurisé</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Cities Grid -->
+<div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    {% for city in cities %}
+    <div class="card-hover bg-white rounded-lg shadow p-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="font-semibold text-gray-800">🏠
+                    <a href="/address/{{ category_slug }}/{{ city.slug }}" class="hover:text-blue-600 transition duration-200">
+                        {{ city.name }}
+                    </a>
+                </h3>
+                <p class="text-sm text-gray-600">{{ city.population }} habitants</p>
+                <p class="text-xs text-gray-500">{{ city.postal_code }}</p>
+            </div>
+            <a href="/category/{{ category_slug }}/{{ city.slug }}"
+               class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition duration-200 text-sm">
+                👀 Voir
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if not cities %}
+<div class="text-center py-12">
+    <i class="fas fa-map-marker-alt text-gray-400 text-6xl mb-4"></i>
+    <h3 class="text-xl font-semibold text-gray-700 mb-2">Aucune commune trouvée</h3>
+    <p class="text-gray-500">Il n'y a pas de communes pour {{ category_name.lower() }} dans ce département.</p>
+</div>
+{% endif %}
+{% endblock %}
