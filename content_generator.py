@@ -1,4 +1,5 @@
 import random
+from config import CATEGORIES
 
 class ContentGenerator:
     """Générateur de contenu spinné pour les fiches détaillées"""
@@ -14,6 +15,30 @@ class ContentGenerator:
 
         # Templates d'introduction spécifiques par catégorie
         self.intro_templates_by_category = {
+            'plombier': [
+                "Vous avez besoin d'un plombier fiable à {city} ? Les artisans plombiers du {postal_code} interviennent rapidement pour tous vos travaux de plomberie : dépannage urgent, installation sanitaire, rénovation de salle de bain.",
+                "À {city}, les plombiers professionnels du secteur {postal_code} sont reconnus pour leur réactivité et leur savoir-faire. Fuite d'eau, débouchage, installation de chauffe-eau : ils répondent à toutes vos urgences.",
+                "Trouvez votre plombier de confiance à {city} ({postal_code}). Nos artisans qualifiés assurent des interventions rapides et soignées, que ce soit pour une réparation urgente ou un projet de rénovation complète.",
+                "Les plombiers de {city} mettent leur expertise à votre service. Dans le {postal_code}, vous bénéficiez d'un réseau de professionnels qualifiés, disponibles 7j/7 pour vos urgences plomberie."
+            ],
+            'couvreur': [
+                "Votre toiture nécessite une intervention à {city} ? Les couvreurs professionnels du {postal_code} assurent tous types de travaux : réfection complète, réparation de fuites, pose de tuiles ou ardoises.",
+                "À {city}, les artisans couvreurs du secteur {postal_code} maîtrisent toutes les techniques de couverture. Zinguerie, isolation, démoussage : ils garantissent l'étanchéité et la longévité de votre toiture.",
+                "Protégez votre habitat à {city} avec un couvreur expérimenté. Les professionnels du {postal_code} interviennent pour l'entretien, la rénovation et l'isolation de votre toit.",
+                "Les couvreurs de {city} ({postal_code}) vous proposent des solutions adaptées à tous les types de toiture. Devis gratuit et intervention rapide pour vos travaux de couverture."
+            ],
+            'pisciniste': [
+                "Vous rêvez d'une piscine à {city} ? Les piscinistes du {postal_code} conçoivent et réalisent votre projet sur mesure : piscine enterrée, semi-enterrée ou hors-sol, adaptée à votre terrain et vos envies.",
+                "À {city}, les spécialistes piscine du secteur {postal_code} vous accompagnent de la conception à l'entretien. Construction, rénovation, mise en service : votre bassin entre de bonnes mains.",
+                "Faites appel aux piscinistes de {city} ({postal_code}) pour un projet de qualité. Liner, système de filtration, traitement de l'eau : ils maîtrisent toutes les technologies.",
+                "Les professionnels de la piscine à {city} assurent également l'entretien annuel et l'hivernage de votre bassin. Dans le {postal_code}, profitez d'une eau cristalline toute l'année."
+            ],
+            'vitrier': [
+                "Besoin d'un vitrier en urgence à {city} ? Les artisans vitriers du {postal_code} interviennent rapidement pour tout remplacement de vitre cassée, double vitrage ou vitrine de commerce.",
+                "À {city}, les vitriers professionnels du secteur {postal_code} proposent des solutions sur mesure : miroiterie, pose de double vitrage, création de verrières et cloisons vitrées.",
+                "Faites confiance aux vitriers de {city} ({postal_code}) pour tous vos travaux de vitrerie. Intervention rapide, devis gratuit et garantie sur la pose.",
+                "Les spécialistes du vitrage à {city} maîtrisent toutes les techniques : verre feuilleté, verre trempé, isolation thermique et phonique. Le {postal_code} bénéficie d'artisans qualifiés."
+            ],
             'architecte-interieur': [
                 "Vous recherchez un architecte d'intérieur à {city} pour sublimer votre habitat ? Les professionnels du {postal_code} vous accompagnent dans tous vos projets de décoration et d'aménagement intérieur, du simple conseil à la rénovation complète.",
                 "Transformez votre intérieur à {city} grâce à l'expertise d'un architecte d'intérieur local. Dans le secteur du {postal_code}, nos professionnels créent des espaces de vie uniques, fonctionnels et à votre image.",
@@ -32,6 +57,30 @@ class ContentGenerator:
 
         # Templates de description spécifiques par catégorie
         self.description_templates_by_category = {
+            'plombier': [
+                "À {city}, les plombiers professionnels du {postal_code} interviennent dans les meilleurs délais pour résoudre vos problèmes de plomberie. Que ce soit pour une fuite d'eau urgente, un débouchage de canalisation ou l'installation d'un nouveau système sanitaire, ils apportent des solutions durables et économiques.",
+                "Le secteur du {postal_code} bénéficie de plombiers expérimentés et équipés des dernières technologies. À {city}, ces artisans réalisent tous types de travaux : pose de robinetterie, installation de chauffe-eau thermodynamique, rénovation complète de salle de bain avec douche à l'italienne.",
+                "Les plombiers de {city} se distinguent par leur professionnalisme et leur respect des délais. Ils établissent des devis clairs et détaillés, sans surprise. Le {postal_code} dispose d'un réseau d'artisans certifiés RGE pour vos travaux d'économie d'énergie.",
+                "Faire appel à un plombier à {city} ({postal_code}), c'est l'assurance d'un travail soigné et conforme aux normes. Ces professionnels maîtrisent la plomberie traditionnelle comme les nouvelles technologies : VMC, récupération d'eau de pluie, systèmes de chauffage performants."
+            ],
+            'couvreur': [
+                "À {city}, les couvreurs du {postal_code} sont spécialisés dans tous les types de couverture : tuiles mécaniques, tuiles plates, ardoises naturelles ou zinc. Ils interviennent aussi bien sur les constructions neuves que sur la rénovation de toitures anciennes.",
+                "Le secteur du {postal_code} compte des artisans couvreurs maîtrisant les techniques traditionnelles et modernes. À {city}, ils assurent l'étanchéité de votre toit, la pose de gouttières et l'installation de fenêtres de toit type Velux.",
+                "Les couvreurs de {city} proposent également des services de démoussage et de traitement hydrofuge pour prolonger la durée de vie de votre toiture. Le {postal_code} bénéficie d'artisans expérimentés pour l'isolation thermique par l'extérieur (ITE).",
+                "Confier votre toiture à un couvreur de {city} ({postal_code}), c'est garantir la protection de votre habitat. Ces professionnels certifiés interviennent en toute sécurité et dans le respect des normes DTU pour une toiture étanche et durable."
+            ],
+            'pisciniste': [
+                "À {city}, les piscinistes du {postal_code} réalisent des piscines sur mesure adaptées à votre terrain et votre budget. Piscine béton, coque polyester ou kit bois : ils maîtrisent toutes les techniques de construction.",
+                "Le secteur du {postal_code} compte des spécialistes piscine reconnus pour leur expertise technique. À {city}, ils vous accompagnent dans le choix du système de filtration, du revêtement et des équipements : pompe à chaleur, nage à contre-courant, volet roulant.",
+                "Les piscinistes de {city} assurent également l'entretien régulier de votre bassin : analyse de l'eau, hivernage, remise en service printanière. Le {postal_code} dispose d'un service de dépannage rapide pour vos urgences.",
+                "Faire construire sa piscine à {city} ({postal_code}), c'est valoriser son patrimoine immobilier tout en profitant d'un espace de détente privatif. Les professionnels locaux vous conseillent sur les démarches administratives et les aides financières disponibles."
+            ],
+            'vitrier': [
+                "À {city}, les vitriers du {postal_code} interviennent en urgence pour tout remplacement de vitrage cassé. Particuliers et professionnels bénéficient d'un service rapide, que ce soit pour une vitre simple, un double vitrage ou une vitrine de commerce.",
+                "Le secteur du {postal_code} compte des artisans vitriers spécialisés dans la miroiterie sur mesure. À {city}, ils réalisent des créations personnalisées : crédences de cuisine, parois de douche, miroirs décoratifs, cloisons vitrées.",
+                "Les vitriers de {city} proposent des solutions d'isolation thermique et phonique avec des vitrages haute performance. Le {postal_code} bénéficie d'experts en remplacement de double vitrage et pose de survitrage.",
+                "Faire appel à un vitrier à {city} ({postal_code}), c'est s'assurer d'une pose dans les règles de l'art. Ces professionnels travaillent tous types de verre : feuilleté, trempé, dépoli, coloré, avec des garanties sur leur intervention."
+            ],
             'architecte-interieur': [
                 "À {city}, l'architecture d'intérieur est un art maîtrisé par des professionnels passionnés. Que vous souhaitiez rénover un appartement haussmannien, optimiser un studio ou créer une ambiance contemporaine dans votre maison, les experts du {postal_code} vous guident à chaque étape. Leur connaissance du patrimoine local et des contraintes architecturales régionales constitue un atout précieux.",
                 "Le secteur du {postal_code} concentre des talents en architecture d'intérieur reconnus pour leur créativité et leur rigueur. À {city}, ces professionnels interviennent aussi bien pour les particuliers que pour les professionnels : réaménagement de bureaux, décoration de commerces, home staging pour la vente immobilière. Chaque projet bénéficie d'une approche personnalisée.",
@@ -79,6 +128,30 @@ class ContentGenerator:
 
         # Templates de conclusion spécifiques par catégorie
         self.conclusion_templates_by_category = {
+            'plombier': [
+                "Pour tous vos besoins en plomberie à {city}, contactez dès maintenant un professionnel du {postal_code}. Devis gratuit et sans engagement, intervention rapide pour vos urgences. Appelez le 04 58 10 57 19.",
+                "Les plombiers de {city} sont disponibles 7j/7 pour vos dépannages urgents. Dans le {postal_code}, vous bénéficiez d'un service de proximité réactif et professionnel. Demandez votre devis gratuit dès aujourd'hui.",
+                "Ne restez pas avec une fuite d'eau ou une canalisation bouchée. Les plombiers de {city} ({postal_code}) interviennent dans les plus brefs délais. Contactez-nous pour un diagnostic gratuit.",
+                "Faites confiance aux artisans plombiers de {city} pour tous vos travaux. Du simple dépannage à la rénovation complète, le {postal_code} dispose de professionnels qualifiés à votre écoute."
+            ],
+            'couvreur': [
+                "Protégez votre maison avec un couvreur professionnel à {city}. Contactez les artisans du {postal_code} pour un diagnostic gratuit de votre toiture. Devis sans engagement au 04 58 10 57 19.",
+                "Les couvreurs de {city} assurent l'étanchéité et la longévité de votre toit. Dans le {postal_code}, profitez d'un service de qualité avec des matériaux durables. Demandez votre devis gratuit.",
+                "Votre toiture mérite les meilleurs soins. Les couvreurs de {city} ({postal_code}) interviennent pour tous vos travaux : réparation, rénovation, isolation. Contactez-nous pour une inspection gratuite.",
+                "Ne négligez pas l'entretien de votre toiture. Les artisans couvreurs de {city} vous accompagnent toute l'année. Le {postal_code} bénéficie d'experts reconnus pour leur savoir-faire."
+            ],
+            'pisciniste': [
+                "Réalisez votre rêve de piscine à {city}. Contactez les piscinistes du {postal_code} pour une étude personnalisée gratuite. Devis sur mesure au 04 58 10 57 19.",
+                "Les piscinistes de {city} vous accompagnent de A à Z dans votre projet. Construction, entretien, rénovation : le {postal_code} compte des experts passionnés. Demandez votre devis gratuit.",
+                "Profitez de votre jardin avec une piscine sur mesure à {city} ({postal_code}). Nos piscinistes vous conseillent sur les meilleures solutions adaptées à votre terrain et votre budget.",
+                "Votre piscine mérite les meilleurs soins. Les spécialistes de {city} assurent l'entretien et la rénovation de votre bassin. Le {postal_code} dispose d'un service réactif toute l'année."
+            ],
+            'vitrier': [
+                "Vitrage cassé à {city} ? Contactez un vitrier du {postal_code} pour une intervention rapide. Devis gratuit et remplacement dans la journée. Appelez le 04 58 10 57 19.",
+                "Les vitriers de {city} interviennent en urgence pour sécuriser votre habitat ou commerce. Dans le {postal_code}, bénéficiez d'un service professionnel 7j/7. Demandez votre devis gratuit.",
+                "Pour tous vos travaux de vitrerie à {city} ({postal_code}), faites appel à des artisans qualifiés. Double vitrage, miroiterie, vitrine : nos experts sont à votre service.",
+                "Améliorez l'isolation de votre logement avec un vitrier de {city}. Le {postal_code} compte des spécialistes du double et triple vitrage. Contactez-nous pour un devis gratuit."
+            ],
             'architecte-interieur': [
                 "Prêt à transformer votre intérieur à {city} ? Contactez dès maintenant un architecte d'intérieur du {postal_code} pour une première consultation. Devis gratuit, conseils personnalisés et accompagnement sur-mesure vous attendent pour concrétiser le projet de vos rêves.",
                 "Les architectes d'intérieur de {city} sont à votre disposition pour donner vie à vos idées. Du simple relooking à la rénovation totale, les professionnels du {postal_code} s'adaptent à tous les budgets et à toutes les envies. Demandez votre devis personnalisé dès aujourd'hui.",
@@ -124,6 +197,3 @@ class ContentGenerator:
         }
 
         return content
-
-# Import pour avoir accès à CATEGORIES
-from config import CATEGORIES

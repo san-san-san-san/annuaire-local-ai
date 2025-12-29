@@ -1,105 +1,321 @@
 {% extends "base.html" %}
 
-{% block title %}{{ category_name }} à {{ city_name }} - Annuaire Professionnel{% endblock %}
+{% block title %}{{ category_name }} à {{ city_name }} ({{ commune.code_postal }}) - Devis Gratuit{% endblock %}
 
-{% block page_title %}👷 {{ category_name }} à {{ city_name }}{% endblock %}
-{% block page_description %}Services {{ category_name.lower() }} à {{ city_name }}{% endblock %}
+{% block meta_description %}{{ category_name }} à {{ city_name }} ({{ commune.code_postal }}). Service professionnel, intervention rapide dans le {{ dept_name }}. Devis gratuit au 04 58 10 57 19.{% endblock %}
+
+{% block page_title %}
+    {% if category_slug == 'couvreur' %}🏠{% elif category_slug == 'pisciniste' %}🏊{% elif category_slug == 'plombier' %}🔧{% elif category_slug == 'vitrier' %}🪟{% elif category_slug == 'architecte-interieur' %}🎨{% else %}👷{% endif %}
+    {{ category_name }} à {{ city_name }}
+{% endblock %}
+
+{% block page_description %}Votre {{ category_name.lower() }} de confiance à {{ city_name }} ({{ commune.code_postal }}) - {{ dept_name }}{% endblock %}
 
 {% block content %}
-<!-- Breadcrumb -->
-<nav class="flex mb-8" aria-label="Breadcrumb">
-    <ol class="inline-flex items-center space-x-1 md:space-x-3">
-        <li class="inline-flex items-center">
-            <a href="/" class="text-gray-700 hover:text-blue-600">Accueil</a>
+<!-- Breadcrumb avec Schema.org -->
+<nav class="flex mb-6" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center space-x-1 md:space-x-3" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="/" class="text-gray-700 hover:text-blue-600" itemprop="item">
+                <span itemprop="name">Accueil</span>
+            </a>
+            <meta itemprop="position" content="1" />
         </li>
-        <li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
             <div class="flex items-center">
                 <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
-                <a href="/category/{{ category_slug }}" class="text-gray-700 hover:text-blue-600">{{ category_name }}</a>
+                <a href="/category/{{ category_slug }}" class="text-gray-700 hover:text-blue-600" itemprop="item">
+                    <span itemprop="name">{{ category_name }}</span>
+                </a>
             </div>
+            <meta itemprop="position" content="2" />
         </li>
-        <li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
             <div class="flex items-center">
                 <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
-                <span class="text-gray-500">{{ city_name }}</span>
+                <a href="/category/{{ category_slug }}/department/{{ dept_code }}" class="text-gray-700 hover:text-blue-600" itemprop="item">
+                    <span itemprop="name">{{ dept_name }}</span>
+                </a>
             </div>
+            <meta itemprop="position" content="3" />
+        </li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <div class="flex items-center">
+                <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                <span class="text-gray-500" itemprop="name">{{ city_name }}</span>
+            </div>
+            <meta itemprop="position" content="4" />
         </li>
     </ol>
 </nav>
 
-<!-- Info Section -->
-<div class="bg-white rounded-lg shadow-lg p-6 mb-8">
-    <div class="flex items-center justify-between">
-        <div>
-            <h2 class="text-2xl font-bold text-gray-800">Service {{ category_name }} disponible</h2>
-            <p class="text-gray-600">👷 {{ category_name }} à {{ city_name }}</p>
+<!-- CTA Principal -->
+<div class="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl p-6 mb-8 shadow-lg">
+    <div class="flex flex-col md:flex-row items-center justify-between">
+        <div class="mb-4 md:mb-0">
+            <h2 class="text-2xl font-bold mb-2">Besoin d'un {{ category_name.lower() }} à {{ city_name }} ?</h2>
+            <p class="opacity-90">Intervention rapide • Devis gratuit • Professionnels qualifiés</p>
         </div>
-        <div class="text-right">
-            <p class="text-sm text-gray-500">📮 Code postal : {{ addresses[0].code_postal if addresses }}</p>
-        </div>
+        <a href="tel:0458105719" class="flex items-center space-x-3 bg-white text-green-600 px-6 py-4 rounded-lg font-bold hover:bg-gray-100 transition shadow-md">
+            <i class="fas fa-phone-alt text-2xl animate-pulse"></i>
+            <div>
+                <div class="text-xs text-gray-500">Appelez maintenant</div>
+                <div class="text-xl">04 58 10 57 19</div>
+            </div>
+        </a>
     </div>
 </div>
 
-<!-- Commune Info -->
-<div class="space-y-4">
-    {% for commune in addresses %}
-    <div class="bg-white rounded-lg shadow p-6 card-hover">
-        <div class="flex items-start justify-between">
-            <div class="flex-1">
-                <a href="/address/{{ category_slug }}/{{ commune.commune_slug }}" class="block">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2 hover:text-blue-600 transition duration-200">
-                        {{ commune.nom_commune }}
-                    </h3>
+<div class="grid lg:grid-cols-3 gap-8">
+    <!-- Contenu Principal -->
+    <div class="lg:col-span-2 space-y-8">
+
+        <!-- Section Introduction -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                {{ category_name }} à {{ city_name }}
+            </h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                {{ content.intro }}
+            </p>
+            <p class="text-gray-700 leading-relaxed">
+                {{ content.description }}
+            </p>
+        </div>
+
+        <!-- Section Expertise -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-star text-yellow-500 mr-2"></i>
+                Notre expertise {{ category_name.lower() }}
+            </h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                {{ content.expertise }}
+            </p>
+
+            <!-- Services proposés -->
+            <div class="mt-6">
+                <h3 class="font-semibold text-gray-800 mb-3">Nos services {{ category_name.lower() }} à {{ city_name }} :</h3>
+                <div class="grid sm:grid-cols-2 gap-3">
+                    {% if category_slug == 'plombier' %}
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Installation sanitaires</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Dépannage urgent</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Débouchage canalisations</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Rénovation salle de bain</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Chauffe-eau & chaudière</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Fuite d'eau</div>
+                    {% elif category_slug == 'couvreur' %}
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Réfection toiture</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Pose tuiles & ardoises</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Zinguerie</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Isolation toiture</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Démoussage</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Charpente</div>
+                    {% elif category_slug == 'pisciniste' %}
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Construction piscine</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Rénovation bassin</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Entretien annuel</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Système filtration</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Liner & revêtement</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Hivernage</div>
+                    {% elif category_slug == 'vitrier' %}
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Remplacement vitrage</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Double vitrage</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Vitrine commerce</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Miroir sur mesure</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Dépannage urgent</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Verre sécurit</div>
+                    {% elif category_slug == 'architecte-interieur' %}
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Conception d'espaces</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Rénovation intérieure</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Décoration</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Home staging</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Plans 3D</div>
+                    <div class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i>Suivi de chantier</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Conclusion -->
+        <div class="bg-blue-50 rounded-xl p-6 border border-blue-100">
+            <p class="text-gray-700 leading-relaxed">
+                {{ content.conclusion }}
+            </p>
+        </div>
+
+        <!-- Maillage Interne : Villes Proches -->
+        {% if nearby_communes %}
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-map-marker-alt text-red-500 mr-2"></i>
+                {{ category_name }} dans les communes proches
+            </h2>
+            <p class="text-gray-600 mb-4">Nous intervenons également dans les communes voisines de {{ city_name }} :</p>
+            <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+                {% for commune in nearby_communes %}
+                <a href="/category/{{ category_slug }}/{{ commune.commune_slug }}"
+                   class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition">
+                    <i class="fas fa-chevron-right text-gray-400 mr-2"></i>
+                    <span>{{ commune.nom_commune }}</span>
+                    <span class="ml-auto text-xs text-gray-400">{{ "%.0f"|format(commune.distance) }} km</span>
                 </a>
-                <div class="flex items-center text-gray-600 mb-2">
-                    <i class="fas fa-map-marker-alt mr-2"></i>
-                    <span>{{ commune.code_postal }} {{ commune.nom_commune }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Maillage Interne : Même Département -->
+        {% if same_dept_communes %}
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-building text-purple-500 mr-2"></i>
+                Autres villes du {{ dept_name }}
+            </h2>
+            <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-2">
+                {% for commune in same_dept_communes %}
+                <a href="/category/{{ category_slug }}/{{ commune.commune_slug }}"
+                   class="text-sm text-gray-600 hover:text-blue-600 hover:underline">
+                    {{ commune.nom_commune }}
+                </a>
+                {% endfor %}
+            </div>
+            <a href="/category/{{ category_slug }}/department/{{ dept_code }}"
+               class="inline-flex items-center mt-4 text-blue-600 hover:text-blue-800 font-medium">
+                Voir toutes les villes du {{ dept_name }}
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- Sidebar -->
+    <div class="space-y-6">
+
+        <!-- Fiche Commune -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">
+                <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                À propos de {{ city_name }}
+            </h3>
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                    <span class="text-gray-500">Code postal</span>
+                    <span class="font-medium">{{ commune.code_postal }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                    <span class="text-gray-500">Département</span>
+                    <span class="font-medium">{{ dept_name }} ({{ dept_code }})</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                    <span class="text-gray-500">Région</span>
+                    <span class="font-medium">{{ commune.region }}</span>
                 </div>
                 {% if commune.population and commune.population > 0 %}
-                <div class="flex items-center text-gray-500 text-sm mb-1">
-                    <i class="fas fa-users mr-2"></i>
-                    <span>{{ commune.population }} habitants</span>
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                    <span class="text-gray-500">Population</span>
+                    <span class="font-medium">{{ "{:,}".format(commune.population|int).replace(",", " ") }} hab.</span>
                 </div>
                 {% endif %}
-                {% if commune.lat and commune.lon and commune.lat != 0 and commune.lon != 0 %}
-                <div class="flex items-center text-gray-500 text-sm">
-                    <i class="fas fa-globe mr-2"></i>
-                    <span>{{ "%.6f"|format(commune.lat) }}, {{ "%.6f"|format(commune.lon) }}</span>
+                {% if commune.superficie_km2 and commune.superficie_km2 > 0 %}
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                    <span class="text-gray-500">Superficie</span>
+                    <span class="font-medium">{{ "%.1f"|format(commune.superficie_km2) }} km²</span>
+                </div>
+                {% endif %}
+                {% if commune.altitude_moyenne and commune.altitude_moyenne > 0 %}
+                <div class="flex justify-between py-2 border-b border-gray-100">
+                    <span class="text-gray-500">Altitude</span>
+                    <span class="font-medium">{{ commune.altitude_moyenne|int }} m</span>
                 </div>
                 {% endif %}
             </div>
-            <div class="flex flex-col space-y-2">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                    {% if category_slug == 'couvreur' %}
-                    <i class="fas fa-home mr-1"></i>
-                    {% elif category_slug == 'pisciniste' %}
-                    <i class="fas fa-swimmer mr-1"></i>
-                    {% elif category_slug == 'plombier' %}
-                    <i class="fas fa-wrench mr-1"></i>
-                    {% elif category_slug == 'vitrier' %}
-                    <i class="fas fa-window-maximize mr-1"></i>
+
+            {% if commune.lat and commune.lon and commune.lat != 0 %}
+            <a href="https://www.google.com/maps?q={{ commune.lat }},{{ commune.lon }}"
+               target="_blank"
+               class="flex items-center justify-center mt-4 py-2 bg-gray-100 rounded-lg text-gray-600 hover:bg-gray-200 transition">
+                <i class="fas fa-map mr-2"></i>
+                Voir sur Google Maps
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- CTA Téléphone -->
+        <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-lg font-bold mb-2">Devis gratuit</h3>
+            <p class="text-sm opacity-90 mb-4">Contactez-nous pour un devis {{ category_name.lower() }} à {{ city_name }}</p>
+            <a href="tel:0458105719" class="flex items-center justify-center space-x-2 bg-white text-green-600 py-3 rounded-lg font-bold hover:bg-gray-100 transition">
+                <i class="fas fa-phone-alt"></i>
+                <span>04 58 10 57 19</span>
+            </a>
+        </div>
+
+        <!-- Autres Services -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">
+                <i class="fas fa-tools text-orange-500 mr-2"></i>
+                Autres services à {{ city_name }}
+            </h3>
+            <div class="space-y-2">
+                {% for service in other_services %}
+                <a href="{{ service.url }}"
+                   class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition">
+                    {% if service.slug == 'couvreur' %}
+                    <i class="fas fa-home text-gray-400 mr-3"></i>
+                    {% elif service.slug == 'pisciniste' %}
+                    <i class="fas fa-swimming-pool text-gray-400 mr-3"></i>
+                    {% elif service.slug == 'plombier' %}
+                    <i class="fas fa-wrench text-gray-400 mr-3"></i>
+                    {% elif service.slug == 'vitrier' %}
+                    <i class="fas fa-window-maximize text-gray-400 mr-3"></i>
+                    {% elif service.slug == 'architecte-interieur' %}
+                    <i class="fas fa-palette text-gray-400 mr-3"></i>
                     {% endif %}
-                    {{ category_name }}
-                </span>
-                {% if commune.lat and commune.lon and commune.lat != 0 and commune.lon != 0 %}
-                <a href="https://www.google.com/maps?q={{ commune.lat }},{{ commune.lon }}"
-                   target="_blank"
-                   class="inline-flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-800">
-                    <i class="fas fa-external-link-alt mr-1"></i>
-                    Voir sur Maps
+                    <span>{{ service.name }}</span>
+                    <i class="fas fa-chevron-right text-gray-300 ml-auto"></i>
                 </a>
-                {% endif %}
+                {% endfor %}
             </div>
         </div>
+
     </div>
-    {% endfor %}
 </div>
 
-{% if not addresses %}
-<div class="text-center py-12">
-    <i class="fas fa-map-marker-alt text-gray-400 text-6xl mb-4"></i>
-    <h3 class="text-xl font-semibold text-gray-700 mb-2">Service non disponible</h3>
-    <p class="text-gray-500">Il n'y a pas de service {{ category_name.lower() }} disponible à {{ city_name }}.</p>
+<!-- Schema.org LocalBusiness -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "{{ category_name }} à {{ city_name }}",
+  "description": "{{ category_name }} professionnel à {{ city_name }} ({{ commune.code_postal }}). Service de qualité dans le {{ dept_name }}.",
+  "telephone": "+33458105719",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "{{ city_name }}",
+    "postalCode": "{{ commune.code_postal }}",
+    "addressRegion": "{{ commune.region }}",
+    "addressCountry": "FR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": {{ commune.lat if commune.lat else 0 }},
+    "longitude": {{ commune.lon if commune.lon else 0 }}
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "{{ city_name }}"
+  },
+  "priceRange": "€€"
+}
+</script>
+
+<!-- CTA Mobile Sticky -->
+<div class="fixed bottom-0 left-0 right-0 bg-green-600 text-white p-3 md:hidden z-50 shadow-lg">
+    <a href="tel:0458105719" class="flex items-center justify-center space-x-3">
+        <i class="fas fa-phone-alt text-xl animate-pulse"></i>
+        <span class="font-bold">Appeler le 04 58 10 57 19</span>
+    </a>
 </div>
-{% endif %}
 {% endblock %}

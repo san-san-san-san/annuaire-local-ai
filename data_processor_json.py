@@ -33,45 +33,44 @@ class DataProcessor:
         return filtered_communes
 
     def prepare_communes_data(self, communes_data):
-        """Prépare les données de communes avec assignation de catégories"""
+        """Prépare les données de communes avec TOUTES les catégories pour chaque commune"""
         print("Préparation des données de communes...")
 
         prepared_communes = []
 
         for commune in communes_data:
-            # Assigner une catégorie aléatoire à chaque commune
-            category = random.choice(list(CATEGORIES.keys()))
+            # Créer une entrée pour CHAQUE catégorie pour chaque commune
+            for category in CATEGORIES.keys():
+                commune_data = {
+                    'id': f"{commune['code_insee']}_{category}",  # ID unique par commune+catégorie
+                    'code_insee': commune['code_insee'],
+                    'nom_commune': commune['nom_standard'],
+                    'code_postal': commune['code_postal'],
+                    'department': commune['dep_code'],
+                    'dep_nom': commune['dep_nom'],
+                    'region': commune['reg_nom'],
+                    'population': commune.get('population', 0),
+                    'lat': commune.get('latitude_centre', commune.get('latitude_mairie', 0)),
+                    'lon': commune.get('longitude_centre', commune.get('longitude_mairie', 0)),
+                    'category': category,
+                    'superficie_km2': commune.get('superficie_km2', 0),
+                    'superficie_hectare': commune.get('superficie_hectare', 0),
+                    'densite': commune.get('densite', 0),
+                    'altitude_moyenne': commune.get('altitude_moyenne', 0),
+                    'grille_densite': commune.get('grille_densite', 0),
+                    'grille_densite_texte': commune.get('grille_densite_texte', ''),
+                    'unite_urbaine': commune.get('nom_unite_urbaine', 'Hors unité urbaine'),
+                    'type_commune_unite_urbaine': commune.get('type_commune_unite_urbaine', ''),
+                    'niveau_equipements_services': commune.get('niveau_equipements_services', 0),
+                    'niveau_equipements_services_texte': commune.get('niveau_equipements_services_texte', ''),
+                    'gentile': commune.get('gentile', ''),
+                    'url_wikipedia': commune.get('url_wikipedia', ''),
+                    'url_villedereve': commune.get('url_villedereve', '')
+                }
 
-            commune_data = {
-                'id': commune['code_insee'],
-                'code_insee': commune['code_insee'],
-                'nom_commune': commune['nom_standard'],
-                'code_postal': commune['code_postal'],
-                'department': commune['dep_code'],
-                'dep_nom': commune['dep_nom'],
-                'region': commune['reg_nom'],
-                'population': commune.get('population', 0),
-                'lat': commune.get('latitude_centre', commune.get('latitude_mairie', 0)),
-                'lon': commune.get('longitude_centre', commune.get('longitude_mairie', 0)),
-                'category': category,
-                'superficie_km2': commune.get('superficie_km2', 0),
-                'superficie_hectare': commune.get('superficie_hectare', 0),
-                'densite': commune.get('densite', 0),
-                'altitude_moyenne': commune.get('altitude_moyenne', 0),
-                'grille_densite': commune.get('grille_densite', 0),
-                'grille_densite_texte': commune.get('grille_densite_texte', ''),
-                'unite_urbaine': commune.get('nom_unite_urbaine', 'Hors unité urbaine'),
-                'type_commune_unite_urbaine': commune.get('type_commune_unite_urbaine', ''),
-                'niveau_equipements_services': commune.get('niveau_equipements_services', 0),
-                'niveau_equipements_services_texte': commune.get('niveau_equipements_services_texte', ''),
-                'gentile': commune.get('gentile', ''),
-                'url_wikipedia': commune.get('url_wikipedia', ''),
-                'url_villedereve': commune.get('url_villedereve', '')
-            }
+                prepared_communes.append(commune_data)
 
-            prepared_communes.append(commune_data)
-
-        print(f"Prepared {len(prepared_communes)} communes")
+        print(f"Prepared {len(prepared_communes)} entries ({len(communes_data)} communes x {len(CATEGORIES)} categories)")
         return prepared_communes
 
     def process_addresses(self):
@@ -131,20 +130,31 @@ class DataProcessor:
 
         return nearby.to_dict('records')
 
-    def get_commune_by_slug(self, commune_slug):
-        """Récupère une commune par son slug"""
+    def get_commune_by_slug(self, commune_slug, category=None):
+        """Récupère une commune par son slug et optionnellement par catégorie"""
         if self.df is None:
             return None
 
-        commune_row = self.df[self.df['commune_slug'] == commune_slug]
+        if category:
+            commune_row = self.df[
+                (self.df['commune_slug'] == commune_slug) &
+                (self.df['category'] == category)
+            ]
+        else:
+            commune_row = self.df[self.df['commune_slug'] == commune_slug]
+
         if commune_row.empty:
             return None
 
         return commune_row.iloc[0].to_dict()
 
+    def get_commune_by_category_and_slug(self, category, commune_slug):
+        """Récupère une commune par catégorie et slug"""
+        return self.get_commune_by_slug(commune_slug, category)
+
     # Alias pour compatibilité
-    def get_address_by_slug(self, address_slug):
-        return self.get_commune_by_slug(address_slug)
+    def get_address_by_slug(self, address_slug, category=None):
+        return self.get_commune_by_slug(address_slug, category)
 
     def get_sitemap_data(self):
         """Génère les données pour le plan de site organisé par département"""
@@ -179,13 +189,20 @@ class DataProcessor:
             return {
                 'total_addresses': 0,
                 'cities_count': 0,
-                'departments_count': 0
+                'departments_count': 0,
+                'categories_count': 0,
+                'total_pages': 0
             }
 
+        cities_count = len(self.df['nom_commune'].unique())
+        categories_count = len(CATEGORIES)
+
         return {
-            'total_addresses': len(self.df),  # Maintenant = total communes
-            'cities_count': len(self.df['nom_commune'].unique()),
-            'departments_count': len(self.df['department'].unique())
+            'total_addresses': len(self.df),  # Total entrées (communes x catégories)
+            'cities_count': cities_count,
+            'departments_count': len(self.df['department'].unique()),
+            'categories_count': categories_count,
+            'total_pages': cities_count * categories_count  # Nombre total de pages
         }
 
     def get_cities_by_category(self, category):

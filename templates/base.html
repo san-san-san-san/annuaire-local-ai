@@ -3,8 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="8GuLm4jVzqcW01uJBaQUdoRsFr2-u5A5mgb244DPuuE" />
     <title>{% block title %}🏠 Annuaire Professionnel{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}Trouvez les meilleurs professionnels près de chez vous{% endblock %}">
+
+    <!-- SEO: Canonical URL -->
+    <link rel="canonical" href="{% block canonical_url %}{{ request.url }}{% endblock %}">
+
+    <!-- SEO: Open Graph (Facebook, LinkedIn) -->
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ self.meta_description() }}{% endblock %}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:site_name" content="AnnuairePro">
+
+    <!-- SEO: Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ self.title() }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{{ self.meta_description() }}{% endblock %}">
+
+    <!-- SEO: Language -->
+    <link rel="alternate" hreflang="fr" href="{{ request.url }}">
+    <link rel="alternate" hreflang="x-default" href="{{ request.url }}">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>

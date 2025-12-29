@@ -6,6 +6,7 @@ import os
 
 app = Flask(__name__, template_folder=TEMPLATES_DIR, static_folder=STATIC_DIR)
 data_processor = DataProcessor()
+data_processor.process_addresses()  # Charger les données au démarrage
 content_generator = ContentGenerator()
 
 @app.route('/')
@@ -103,7 +104,7 @@ def department_cities_page(category_slug, department_code):
 
 @app.route('/category/<category_slug>/<city_slug>')
 def city_page(category_slug, city_slug):
-    """Page de ville avec liste des adresses"""
+    """Page de ville avec contenu riche et maillage interne"""
     if category_slug not in CATEGORIES:
         return "Catégorie non trouvée", 404
 
@@ -118,15 +119,49 @@ def city_page(category_slug, city_slug):
     if city_df.empty:
         return "Ville non trouvée", 404
 
-    city_name = city_df['nom_commune'].iloc[0]
-
-    # Obtenir les adresses pour cette ville et catégorie
-    addresses_df = df[
+    # Obtenir les données de la commune pour cette catégorie
+    commune_df = df[
         (df['city_slug'] == city_slug) &
         (df['category'] == category_slug)
     ]
 
-    addresses_data = addresses_df.head(50).to_dict('records')
+    if commune_df.empty:
+        return "Service non disponible dans cette ville", 404
+
+    commune_data = commune_df.iloc[0].to_dict()
+    city_name = commune_data['nom_commune']
+
+    # Générer le contenu spinné
+    content = content_generator.generate_content(commune_data)
+
+    # Obtenir les communes proches pour le maillage interne
+    nearby_communes = data_processor.get_nearby_communes(
+        lat=commune_data.get('lat', 0),
+        lon=commune_data.get('lon', 0),
+        category=category_slug,
+        current_commune_id=commune_data['id'],
+        radius_km=30,
+        limit=6
+    )
+
+    # Obtenir les autres services disponibles dans cette ville
+    other_services = []
+    for cat_slug, cat_name in CATEGORIES.items():
+        if cat_slug != category_slug:
+            other_services.append({
+                'slug': cat_slug,
+                'name': cat_name,
+                'url': f'/category/{cat_slug}/{city_slug}'
+            })
+
+    # Obtenir d'autres villes du même département pour le maillage
+    dept_code = commune_data.get('department', '')
+    dept_name = DEPARTMENTS.get(dept_code, f"Département {dept_code}")
+    same_dept_communes = df[
+        (df['department'] == dept_code) &
+        (df['category'] == category_slug) &
+        (df['city_slug'] != city_slug)
+    ].head(8).to_dict('records')
 
     return render_template('city.html',
                          categories=CATEGORIES,
@@ -134,7 +169,14 @@ def city_page(category_slug, city_slug):
                          category_slug=category_slug,
                          city_name=city_name,
                          city_slug=city_slug,
-                         addresses=addresses_data)
+                         commune=commune_data,
+                         content=content,
+                         nearby_communes=nearby_communes,
+                         other_services=other_services,
+                         same_dept_communes=same_dept_communes,
+                         dept_code=dept_code,
+                         dept_name=dept_name,
+                         addresses=[commune_data])
 
 @app.route('/sitemap')
 def sitemap():
@@ -314,6 +356,20 @@ def sitemap_html():
     return render_template('sitemap_html.html',
                          categories=CATEGORIES,
                          sitemap_data=sitemap_data)
+
+@app.route('/robots.txt')
+def robots_txt():
+    """Robots.txt pour les moteurs de recherche"""
+    base_url = request.url_root.rstrip('/')
+    content = f"""User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /search?
+Crawl-delay: 1
+
+Sitemap: {base_url}/sitemap.xml
+"""
+    return Response(content, mimetype='text/plain')
 
 def initialize_data():
     """Initialise les données au démarrage"""
