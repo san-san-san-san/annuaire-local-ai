@@ -15,21 +15,27 @@ class DataProcessor:
         self.raw_data = None
 
     def load_json(self):
-        """Charge le fichier JSON des communes françaises"""
+        """Charge le fichier JSON des communes françaises (optimisé mémoire)"""
         print("Chargement du fichier JSON des communes...")
 
         with open(JSON_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
-        self.raw_data = data
-
-        # Filtrer pour les départements du Sud-Est
+        # Filtrer pour les départements configurés et supprimer les polygones
         filtered_communes = []
         for commune in data['data']:
             if commune['dep_code'] in DEPARTMENTS:
+                # Supprimer les données volumineuses non utilisées (polygones)
+                commune.pop('polygon', None)
+                commune.pop('polygon_wkt', None)
+                commune.pop('bbox', None)
                 filtered_communes.append(commune)
 
-        print(f"Loaded {len(filtered_communes)} communes from Sud-Est departments")
+        # Libérer la mémoire du JSON complet
+        del data
+        self.raw_data = None
+
+        print(f"Loaded {len(filtered_communes)} communes from {len(DEPARTMENTS)} departments")
         return filtered_communes
 
     def prepare_communes_data(self, communes_data):
@@ -74,12 +80,18 @@ class DataProcessor:
         return prepared_communes
 
     def process_addresses(self):
-        """Traite et enrichit les données de communes"""
+        """Traite et enrichit les données de communes (optimisé mémoire)"""
         communes_data = self.load_json()
         prepared_data = self.prepare_communes_data(communes_data)
 
+        # Libérer la mémoire des données brutes
+        del communes_data
+
         # Convertir en DataFrame
         self.df = pd.DataFrame(prepared_data)
+
+        # Libérer la mémoire de prepared_data
+        del prepared_data
 
         # Création d'identifiants et slugs
         self.df['commune_slug'] = self.df['nom_commune'].apply(slugify)
