@@ -419,5 +419,9 @@ def initialize_data():
 
 if __name__ == '__main__':
     initialize_data()
-    print(f"Démarrage du serveur sur http://{SERVER_HOST}:{SERVER_PORT}")
-    app.run(host=SERVER_HOST, port=SERVER_PORT, debug=True)
+    # Use PORT from environment variable for production (Render, etc.) or default to 8989
+    import os
+    port = int(os.environ.get('PORT', SERVER_PORT))
+    host = os.environ.get('HOST', SERVER_HOST)
+    print(f"Démarrage du serveur sur http://{host}:{port}")
+    app.run(host=host, port=port, debug=False)
